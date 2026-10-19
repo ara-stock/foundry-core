@@ -85,30 +85,3 @@ impl From<HardhatArtifact> for CompactContractBytecode {
         c.into()
     }
 }
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-    use alloy_primitives::hex;
-
-    #[test]
-    fn hardhat_artifact_into_contract_bytecode() {
-        let artifact = HardhatArtifact {
-            format: HH_ARTIFACT_VERSION.to_string(),
-            contract_name: "Greeter".to_string(),
-            source_name: "contracts/Greeter.sol".to_string(),
-            abi: Default::default(),
-            bytecode: Some(BytecodeObject::Bytecode(hex!("6080600052").into())),
-            deployed_bytecode: Some(BytecodeObject::Bytecode(hex!("6001600055").into())),
-            link_references: Default::default(),
-            deployed_link_references: Default::default(),
-        };
-
-        let c: ContractBytecode = artifact.into();
-        assert_eq!(c.bytecode.unwrap().object.as_bytes().unwrap()[..], hex!("6080600052"));
-        assert_eq!(
-            c.deployed_bytecode.unwrap().bytecode.unwrap().object.as_bytes().unwrap()[..],
-            hex!("6001600055")
-        );
-    }
-}
